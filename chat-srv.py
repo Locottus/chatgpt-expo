@@ -1,9 +1,10 @@
 from openai import OpenAI
 from flask import Flask, request, jsonify
 import json
+from flask_cors import CORS 
 
 attentionRole = """
-De ahora en adelante eres la siguiente persona:
+De ahora en adelante tienes el siguiente role:
 
 **Nombre del personaje**: Laura Rodríguez
 **Cargo**: Cientifica virtual de datos y analista de cubos de informacion.
@@ -19,8 +20,17 @@ session = []
 session.append({"role": "system", "content": attentionRole})
 
 app = Flask(__name__)
+CORS(app) 
 
 client = OpenAI()
+
+
+@app.route('/', methods=['GET'])
+def handle_get():
+    print('invoked get')
+    return "hello world!"
+    
+
 
 
 @app.route('/postendpoint', methods=['POST'])
@@ -30,9 +40,9 @@ def handle_post():
 
     print(data)
 
-    question = "with the following data: " + json.dumps(data["data"]) + ' run the following statistic measures listed: ' + json.dumps(data["statistics"])
+    question = "with the following data: " + json.dumps(data["data"]) +" " + json.dumps(data["question"])
     
-    client = OpenAI()
+    #client = OpenAI()
 
     session.append({"role": "user", "content": question})
 
